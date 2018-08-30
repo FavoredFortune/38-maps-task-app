@@ -1,4 +1,7 @@
+package com.android.sooz.errandrunner;
+
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.database.DataSnapshot;
 
 public class Errands {
 
