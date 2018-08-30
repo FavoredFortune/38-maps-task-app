@@ -78,11 +78,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    @OnClick(R.id.goToMyErrands)
-    public void goToMyErrands(){
-        Intent intent = new Intent(MainActivity.this,  )
-
-    }
+    //IDE doesn't seem to like my idea of a second button here that goes to a new activity
+    //need to investigate why
+//
+//    @OnClick(R.id.goToMyErrands)
+//    public void goToMyErrands(){
+//        Intent intent = new Intent(Intent.makeMainActivity(this), ErrandListActivity(this))
+//
+//    }
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
