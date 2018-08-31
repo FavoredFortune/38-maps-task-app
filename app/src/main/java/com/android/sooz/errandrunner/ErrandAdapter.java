@@ -25,7 +25,7 @@ public class ErrandAdapter
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
-        View view = inflater.inflate((R.layout.errand_item, viewGroup, false));
+        View view = inflater.inflate(R.layout.errand_item, viewGroup, false);
         MyViewHolder viewHolder = new MyViewHolder(view);
 
         return viewHolder;
