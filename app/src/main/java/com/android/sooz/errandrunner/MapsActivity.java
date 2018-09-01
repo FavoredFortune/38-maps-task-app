@@ -1,19 +1,31 @@
 package com.android.sooz.errandrunner;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -34,15 +46,68 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        ButterKnife.bind(this);
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        ButterKnife.bind(this);
+        final Intent data = getIntent();
 
+        FirebaseDatabase.getInstance().getReference("errands")
+                .child("errand").child(data.getStringExtra("id")).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Errands errand = Errands.fromSnapshot(dataSnapshot);
+                mMap.addMarker(new MarkerOptions().title("start").position(errand.start)
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                mMap.addMarker(new MarkerOptions().title("end").position(errand.end)
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+
+                double centerLat = (errand.start.latitude + errand.end.latitude) / 2;
+                double centerLng = (errand.start.longitude + errand.end.longitude) / 2;
+                LatLng center = new LatLng(centerLat, centerLng);
+
+                mMap.animateCamera(CameraUpdateFactory.newLatLng(center));
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) ==
+                PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            initializeLocationListener();
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+            }, REQUEST_PERMISSION_GRANT);
+        }
     }
 
+    @SuppressLint("MissingPermission")
+    private void initializeLocationListener() {
+        LocationListener listener = this;
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                LOCATION_REFRESH_TIME, LOCATION_REFRESH_DISTANCE, listener);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
+    {
+        if (requestCode == REQUEST_PERMISSION_GRANT && grantResults[0] == RESULT_OK &&
+                requestCode == REQUEST_PERMISSION_GRANT && grantResults[1] == RESULT_OK) {
+            initializeLocationListener();
+        }
+
+    }
 
     /**
      * Manipulates the map once available.
@@ -66,7 +131,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     //show where user is looking when they change location
     @Override
     public void onLocationChanged(Location location) {
-
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         mCurrentLocation = latLng;
     }
@@ -74,7 +138,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @OnClick(R.id.goToMyLocation)
     public void goToMyLocation(){
         if(mCurrentLocation != null) {
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(mCurrentLocation));
+            mMap.animateCamera(CameraUpdateFactory.newLatLng(mCurrentLocation));
         }
     }
 
@@ -88,24 +152,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //    }
 
     @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
+    public void onStatusChanged(String s, int i, Bundle bundle) {
 
+    }
+    @Override
+    public void onProviderEnabled(String s) {
+        Log.d("GPS", "gps turned on");
     }
 
     @Override
-    public void onProviderEnabled(String provider) {
-
+    public void onProviderDisabled(String s) {
+        Log.d("GPS", "gps turned off");
     }
 
-    @Override
-    public void onProviderDisabled(String provider) {
-
-    }
-
-    @Override
-    public void onPointerCaptureChanged(boolean hasCapture) {
-
-    }
 
     //adding these lifecycle logs to help me
     //follow app activity better
@@ -144,4 +203,5 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onDestroy();
         Log.d("LIFECYCLE", "onDestroy");
     }
+
 }
