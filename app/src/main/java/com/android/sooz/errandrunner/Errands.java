@@ -4,19 +4,15 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
 
 public class Errands {
-
-
     String description;
     LatLng start;
     LatLng end;
     String id;
     boolean isComplete;
 
-    public Errand(){
+    public Errands(){ }
 
-    }
-
-    public Errand(String description, LatLng start, LatLng end){
+    public Errands(String description, LatLng start, LatLng end){
         this.description = description;
         this.start = start;
         this.end = end;
@@ -30,7 +26,7 @@ public class Errands {
         errand.id = snapshot.getKey();
         errand.description = snapshot.child("description").getValue(String.class);
 
-        errand.isComplete = snapshot.child("isComplete").getValue(boolean);
+        errand.isComplete = snapshot.child("isComplete").getValue(boolean.class);
 
         float startLat = snapshot.child("start").child("lat").getValue(float.class);
         float startLong = snapshot.child("start").child("long").getValue(float.class);

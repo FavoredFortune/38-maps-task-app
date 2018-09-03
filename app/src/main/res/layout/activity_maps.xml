@@ -1,31 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout android:layout_width="match_parent"
+<android.support.constraint.ConstraintLayout xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:map="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/map"
-    android:name="com.google.android.gms.maps.SupportMapFragment"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MapsActivity" />
+    <LinearLayout
+        android:id="@+id/fragmentHolder"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/controls"
+        android:layout_width="match_parent"
+        android:layout_height="0sp">
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:map="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MapsActivity" />
+    </LinearLayout>
 
-    <Button
-        android:id="@+id/goToMyErrands"
-        android:text="@string/errands"
-        android:textSize="25sp"
-        app:layout_constraintBottom_toTopOf="@+id/goToMyLocation"
+    <LinearLayout
+        android:id="@+id/controls"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    <Button
-        android:id="@+id/goToMyLocation"
-        android:text="@string/go_to_my_location"
-        android:textSize="25sp"
+        android:layout_height="wrap_content"
+        android:layout_margin="5sp"
+        android:layout_marginBottom="4dp"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        tools:layout_editor_absoluteX="46dp">
+
+        <Button
+            android:id="@+id/goToMyLocation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/go_to_my_location"
+            android:textSize="25sp" />
+
+        <LinearLayout
+            android:id="@+id/gpsButtons"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/gpsOff"
+                android:layout_width="183dp"
+                android:layout_height="wrap_content"
+                android:text="@string/turn_off_gps"
+                android:textSize="20sp"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintTop_toBottomOf="@+id/goToMyLocation" />
+
+            <Button
+                android:id="@+id/gpsOn"
+                android:layout_width="198dp"
+                android:layout_height="wrap_content"
+                android:text="@string/gps_on"
+                android:textSize="20sp"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintTop_toBottomOf="@+id/goToMyLocation" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/goToMyErrands"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/errands"
+            android:textSize="25sp"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

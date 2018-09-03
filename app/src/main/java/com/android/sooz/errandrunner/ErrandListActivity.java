@@ -7,9 +7,15 @@ import android.support.v7.widget.RecyclerView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class ErrandListActivity extends AppCompatActivity
         implements ValueEventListener {
@@ -23,11 +29,30 @@ public class ErrandListActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_errand_list);
+
+        ButterKnife.bind(this);
+
+        DatabaseReference errands = FirebaseDatabase.getInstance().getReference("errands");
+        errands.addValueEventListener(this);
+
+        linearLayoutManager = new LinearLayoutManager(this);
+        errandAdapter = new ErrandAdapter();
+
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setAdapter(errandAdapter);
+
     }
 
     @Override
     public void onDataChange(DataSnapshot dataSnapshot) {
+        List<Errands> errands= new ArrayList<>();
 
+        for(DataSnapshot snapshot: dataSnapshot.getChildren()){
+            errands.add(Errands.fromSnapshot(snapshot));
+        }
+
+        errandAdapter.errands = errands;
+        errandAdapter.notifyDataSetChanged();
     }
 
     @Override

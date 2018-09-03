@@ -25,7 +25,7 @@ public class ErrandAdapter
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
-        View view = inflater.inflate((R.layout.errand_item, viewGroup, false));
+        View view = inflater.inflate(R.layout.errand_item, viewGroup, false);
         MyViewHolder viewHolder = new MyViewHolder(view);
 
         return viewHolder;
@@ -47,7 +47,7 @@ public class ErrandAdapter
             implements View.OnClickListener{
 
         View mView;
-        TextView desc;
+        TextView description;
         CheckBox checkBox;
         Errands errand;
 
@@ -56,14 +56,13 @@ public class ErrandAdapter
             mView = itemView;
             mView.setOnClickListener(this);
 
-            //lecture 5:06 - 7
-            desc= itemView.findViewById(R.id.description);
+            description= itemView.findViewById(R.id.description);
             checkBox = itemView.findViewById(R.id.isComplete);
         }
 
         public void bind (Errands errand){
             this.errand = errand;
-            desc.setText(errand.description);
+            description.setText(errand.description);
             checkBox.setChecked(errand.isComplete);
         }
 
