@@ -58,7 +58,7 @@ public class MapsActivity extends FragmentActivity
 
         final Intent data = getIntent();
 
-        FirebaseDatabase.getInstance().getReference("errands/id")
+        FirebaseDatabase.getInstance().getReference("errands/")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -74,7 +74,7 @@ public class MapsActivity extends FragmentActivity
 
                 mMap.animateCamera(CameraUpdateFactory.newLatLng(center));
 
-                mMap.moveCamera(CameraUpdateFactory.zoomTo(12));
+                mMap.moveCamera(CameraUpdateFactory.zoomTo(6));
 
             }
 

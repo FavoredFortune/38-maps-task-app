@@ -1,8 +1,9 @@
 <resources>
     <string name="app_name">ErrandRunner</string>
     <string name="title_activity_maps">Map</string>
-    <string name="go_to_my_location">Go To My Location</string>
-    <string name="errands">Go To My Errands</string>
+    <string name="go_to_my_location">My Location</string>
+    <string name="errands">My Errands</string>
     <string name="turn_off_gps">turn off gps</string>
     <string name="turn_gps_on">Turn GPS On</string>
+    <string name="gps_on">turn on gps</string>
 </resources>
