@@ -53,7 +53,6 @@ public class ErrandListActivity extends AppCompatActivity
 
         errandAdapter.errands = errands;
         errandAdapter.notifyDataSetChanged();
-
     }
 
     @Override

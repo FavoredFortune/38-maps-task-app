@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -20,7 +21,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -33,6 +33,7 @@ import butterknife.OnClick;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener {
 
     private static final int REQUEST_PERMISSION_GRANT = 1;
+    private static final String TAG = "";
 
     private GoogleMap mMap;
 
@@ -56,8 +57,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         final Intent data = getIntent();
 
-        FirebaseDatabase.getInstance().getReference("errands")
-                .child("errand").child(data.getStringExtra("id")).addListenerForSingleValueEvent(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference("errands/")
+                .child(data.getStringExtra("errand item")).child(data.getStringExtra("id")).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Errands errand = Errands.fromSnapshot(dataSnapshot);
@@ -71,6 +72,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 LatLng center = new LatLng(centerLat, centerLng);
 
                 mMap.animateCamera(CameraUpdateFactory.newLatLng(center));
+
+                mMap.moveCamera(CameraUpdateFactory.zoomTo(12));
 
             }
 
@@ -100,20 +103,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
-    {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults){
         if (requestCode == REQUEST_PERMISSION_GRANT && grantResults[0] == RESULT_OK &&
                 requestCode == REQUEST_PERMISSION_GRANT && grantResults[1] == RESULT_OK) {
             initializeLocationListener();
         }
-
     }
 
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
      * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
+     * we just add a marker near Seattle, WA.
      * If Google Play services is not installed on the device, the user will be prompted to install
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
@@ -138,18 +139,38 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @OnClick(R.id.goToMyLocation)
     public void goToMyLocation(){
         if(mCurrentLocation != null) {
+
+            //nice indicator code from classmate Amy Cohen
+            //https://github.com/codefellows-seattle-java-401d1/38-maps-task-app/pull/1/files
+            mMap.addMarker(new MarkerOptions().position(mCurrentLocation).title("You are here"));
+
             mMap.animateCamera(CameraUpdateFactory.newLatLng(mCurrentLocation));
         }
     }
 
-    //IDE doesn't seem to like my idea of a second button here that goes to a new activity
-    //need to investigate why
-//
-//    @OnClick(R.id.goToMyErrands)
-//    public void goToMyErrands(){
-//        Intent intent = new Intent(Intent.makeMainActivity(this), ErrandListActivity(this))
-//
-//    }
+
+    @OnClick(R.id.goToMyErrands)
+    public void goToMyErrands(){
+        Intent intent = new Intent(this, ErrandListActivity.class);
+        startActivity(intent);
+    }
+
+    //code for enabling and disabling GPS from codeproject.com
+    //https://www.codeproject.com/Questions/613512/How-to-start-GPS-ON-and-OFF-programatically-in-And
+    @OnClick(R.id.gpsOff)
+    public void gpsOff(){
+        Intent intent = new Intent("android.location.GPS_ENABLED_CHANGE");
+        intent.putExtra("enabled", false);
+        Toast.makeText(getApplicationContext(),"GPS is now off", Toast.LENGTH_SHORT).show();
+    }
+
+    @OnClick(R.id.gpsOn)
+    public void gpsOn(){
+        Intent intent = new Intent("android.location.GPS_ENABLED_CHANGE");
+        intent.putExtra("enabled", true);
+        Toast.makeText(getApplicationContext(),"GPS is now on", Toast.LENGTH_SHORT).show();
+        sendBroadcast(intent);
+    }
 
     @Override
     public void onStatusChanged(String s, int i, Bundle bundle) {
