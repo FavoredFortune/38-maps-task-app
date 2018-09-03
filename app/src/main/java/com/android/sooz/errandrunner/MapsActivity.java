@@ -30,7 +30,8 @@ import com.google.firebase.database.ValueEventListener;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener {
+public class MapsActivity extends FragmentActivity
+        implements OnMapReadyCallback, LocationListener {
 
     private static final int REQUEST_PERMISSION_GRANT = 1;
     private static final String TAG = "";
@@ -57,8 +58,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         final Intent data = getIntent();
 
-        FirebaseDatabase.getInstance().getReference("errands/")
-                .child(data.getStringExtra("errand item")).child(data.getStringExtra("id")).addListenerForSingleValueEvent(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference("errands/id")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Errands errand = Errands.fromSnapshot(dataSnapshot);
