@@ -74,8 +74,6 @@ public class MapsActivity extends FragmentActivity
 
                 mMap.animateCamera(CameraUpdateFactory.newLatLng(center));
 
-                mMap.moveCamera(CameraUpdateFactory.zoomTo(6));
-
             }
 
             @Override
