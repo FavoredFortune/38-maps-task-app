@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
 
 public class Errands {
     String description;
@@ -29,7 +30,8 @@ public class Errands {
 
         errand.id = snapshot.getKey();
         errand.description = snapshot.child("description").getValue(String.class);
-        errand.isComplete = snapshot.child("isComplete").getValue(boolean.class);
+        DataSnapshot reff = snapshot.child("isComplete");
+        boolean check = (boolean) reff.getValue();
 
         //testing both FirebaseDB approaches for getting value for child of child - both work
         float startLat = snapshot.child("start/lat").getValue(float.class);
