@@ -149,7 +149,6 @@ public class MapsActivity extends FragmentActivity
         }
     }
 
-
     @OnClick(R.id.goToMyErrands)
     public void goToMyErrands(){
         Intent intent = new Intent(this, ErrandListActivity.class);
