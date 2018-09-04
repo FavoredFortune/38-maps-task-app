@@ -102,7 +102,9 @@ public class MapsActivity extends FragmentActivity
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults){
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults){
         if (requestCode == REQUEST_PERMISSION_GRANT && grantResults[0] == RESULT_OK &&
                 requestCode == REQUEST_PERMISSION_GRANT && grantResults[1] == RESULT_OK) {
             initializeLocationListener();
