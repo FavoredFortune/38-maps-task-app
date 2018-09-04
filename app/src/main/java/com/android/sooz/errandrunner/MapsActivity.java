@@ -27,6 +27,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -62,7 +65,16 @@ public class MapsActivity extends FragmentActivity
                 .addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Errands errand = Errands.fromSnapshot(dataSnapshot);
+                    //trying to recreate working code from Errand List activity
+                //not yet working
+//                ArrayList<Errands> errands = new ArrayList<>();
+//                int i = 0;
+//                for(DataSnapshot snapshot: dataSnapshot.getChildren()){
+//                    errands.add(Errands.fromSnapshot(snapshot));
+//                    ArrayList<Errands> errand = errands[i];
+//                    i++;
+//                }
+//
                 mMap.addMarker(new MarkerOptions().title("start").position(errand.start)
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
                 mMap.addMarker(new MarkerOptions().title("end").position(errand.end)
@@ -102,7 +114,9 @@ public class MapsActivity extends FragmentActivity
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults){
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults){
         if (requestCode == REQUEST_PERMISSION_GRANT && grantResults[0] == RESULT_OK &&
                 requestCode == REQUEST_PERMISSION_GRANT && grantResults[1] == RESULT_OK) {
             initializeLocationListener();
@@ -146,7 +160,6 @@ public class MapsActivity extends FragmentActivity
             mMap.animateCamera(CameraUpdateFactory.newLatLng(mCurrentLocation));
         }
     }
-
 
     @OnClick(R.id.goToMyErrands)
     public void goToMyErrands(){
